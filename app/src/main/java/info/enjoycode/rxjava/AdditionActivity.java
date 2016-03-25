@@ -30,13 +30,13 @@ public class AdditionActivity extends BaseActivity {
         setContentView(R.layout.layout_addtion);
         ButterKnife.bind(this);
 
-        Observable.combineLatest(
+        addSubscription(Observable.combineLatest(
                 RxTextView.textChanges(etNum1).map(convertString2Int()),
                 RxTextView.textChanges(etNum2).map(convertString2Int()),
                 (num1, num2) -> num1 + num2
         ).subscribe(
                 integer -> tvResult.setText(integer + "")
-        );
+        ));
     }
 
     @NonNull

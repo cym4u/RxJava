@@ -26,10 +26,10 @@ public class SearchActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
         ButterKnife.bind(this);
-        RxTextView.textChanges(etSearch).debounce(300, TimeUnit.MILLISECONDS).filter(charSequence -> !TextUtils.isEmpty(charSequence))
+        addSubscription(RxTextView.textChanges(etSearch).debounce(300, TimeUnit.MILLISECONDS).filter(charSequence -> !TextUtils.isEmpty(charSequence))
                 .subscribe(charSequence -> {
             Log.d(TAG, "call() called with: " + "charSequence = [" + charSequence + "]");
-        });
+        }));
     }
 
 }

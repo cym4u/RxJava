@@ -35,7 +35,7 @@ public class FormValidateActivity extends BaseActivity {
         //方案1
         Observable<CharSequence> _nameChangeObservable = RxTextView.textChanges(etUserName);
         Observable<CharSequence> _pwdChangeObservable = RxTextView.textChanges(etPassWord);
-        Observable.combineLatest(_nameChangeObservable, _pwdChangeObservable, new Func2<CharSequence, CharSequence, Boolean>() {
+        addSubscription(Observable.combineLatest(_nameChangeObservable, _pwdChangeObservable, new Func2<CharSequence, CharSequence, Boolean>() {
             @Override
             public Boolean call(CharSequence userName, CharSequence userPwd) {
                 return !TextUtils.isEmpty(userName) && !TextUtils.isEmpty(userPwd);
@@ -45,13 +45,13 @@ public class FormValidateActivity extends BaseActivity {
             public void call(Boolean isValid) {
                 btn.setEnabled(isValid);
             }
-        });
+        }));
 
         //简化版
-        Observable.combineLatest(
+        addSubscription(Observable.combineLatest(
                 RxTextView.textChanges(etUserName)
                 , RxTextView.textChanges(etPassWord)
                 , (userName, userPwd) -> !TextUtils.isEmpty(userName) && !TextUtils.isEmpty(userPwd)
-        ).subscribe(isValid -> btn.setEnabled(isValid));
+        ).subscribe(isValid -> btn.setEnabled(isValid)));
     }
 }
