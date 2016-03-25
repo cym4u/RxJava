@@ -35,7 +35,7 @@ public class Filtering {
     }
 
     public static void distinctUntilChanged() {
-        Observable.just(1, 2, 2, 3, 2, 1, 5, 4, 4, 5).distinctUntilChanged().subscribe(System.out::println);
+        Observable.just(1, 2, 2,2, 3, 2,  5, 4, 4, 5).distinctUntilChanged().subscribe(System.out::println);
     }
 
 
@@ -50,6 +50,7 @@ public class Filtering {
 
     public static void elemntAtOrDefault() {
         Observable.empty().elementAtOrDefault(0, "default value").subscribe(System.out::println);
+//        Observable.empty().elementAt(0).subscribe(System.out::println);
     }
 
     public static void filter() {
@@ -73,10 +74,20 @@ public class Filtering {
 
     public static void first2() {
 
-        Observable.just(1, 2, "text", "abc", 5, false).first(new Func1<Serializable, Boolean>() {
+//        Observable.just(1, 2, "text",true, "abc", 5, false).first(new Func1<Serializable, Boolean>() {
+//            @Override
+//            public Boolean call(Serializable serializable) {
+//
+//
+//                return serializable instanceof String;
+//            }
+//        }).subscribe(System.out::println);
+
+
+        Observable.just(1, 2, "text",true, "abc", 5, false).filter(new Func1<Serializable, Boolean>() {
             @Override
             public Boolean call(Serializable serializable) {
-                return serializable instanceof Boolean;
+                return serializable instanceof String;
             }
         }).subscribe(System.out::println);
     }
@@ -140,10 +151,29 @@ public class Filtering {
       Observable.range(1,10).takeLastBuffer(3).subscribe(System.out::println);
     }
 
+
+    public static void throttleFirst() {
+        Observable.create(new Observable.OnSubscribe<Integer>() {
+            @Override
+            public void call(Subscriber<? super Integer> subscriber) {
+                for (int i = 0; i < 5000; i++) {
+                    subscriber.onNext(i);
+                    System.out.println("----------"+i);
+                    try {
+                        Thread.sleep(new Random().nextInt(100));
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                subscriber.onCompleted();
+            }
+        }).throttleFirst(2000, TimeUnit.MILLISECONDS).subscribe(System.out::println);
+    }
+
     public static void main(String[] args) {
 //        debounce();
 //        distinct();
-//        distinctUntilChanged();
+        distinctUntilChanged();
 //        distinctUntilChanged2();//过滤奇偶数
 //        elemntAtOrDefault();
 //        filter();//逢七过
@@ -156,6 +186,11 @@ public class Filtering {
 //        skip();
 //        skipLast();
 //        take();
-        takeLastBuffer();
+//        takeLastBuffer();
+
+//        throttleFirst();
+
+
+
     }
 }

@@ -4,9 +4,6 @@ import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.Subscriber;
-import rx.functions.Action1;
-import rx.functions.Func0;
-import rx.functions.Func1;
 
 public class Creating {
     public static void create1() {
@@ -68,11 +65,11 @@ public class Creating {
     }
 
     public static void range() {
-        Observable.range(1, 100).subscribe(System.out::println);
+        Observable.range(0, 100).subscribe(System.out::println);
     }
 
     public static void repeat(){
-      Observable.range(0,3).repeat(2).subscribe(System.out::println);
+      Observable.range(2,3).repeat(2).subscribe(System.out::println);
 
     }
     public static void timer(){
@@ -86,10 +83,10 @@ public class Creating {
 //        interval();//TODO 无效
 //        just();
 //        range();
-//        repeat();
+        repeat();
 //        timer();//TODO 无效
 
-        defer1();
+//        defer1();
     }
 
 }

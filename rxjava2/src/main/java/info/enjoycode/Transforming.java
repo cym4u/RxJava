@@ -6,13 +6,14 @@ import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.Func2;
 import rx.observables.GroupedObservable;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by chenyuanming on 16/1/3.
  */
 public class Transforming {
     public static void buffer1() {
-        Observable.range(0, 50).buffer(3).subscribe(System.out::println);
+        Observable.range(0, 10).buffer(3).subscribe(System.out::println);
     }
 
     public static void buffer2() {
@@ -53,22 +54,42 @@ public class Transforming {
 
 
     public static void groupBy() {
-        Observable.range(0, 5).groupBy(new Func1<Integer, Boolean>() {
+//        Observable.range(0, 5).groupBy(new Func1<Integer, Boolean>() {
+//            @Override
+//            public Boolean call(Integer integer) {
+//                return integer % 2 == 0;
+//            }
+//        }).subscribe(new Action1<GroupedObservable<Boolean, Integer>>() {
+//            @Override
+//            public void call(GroupedObservable<Boolean, Integer> result) {
+//                result.subscribe(new Action1<Integer>() {
+//                    @Override
+//                    public void call(Integer integer) {
+//                        System.out.println(integer + "%2==0-->" + result.getKey());
+//                    }
+//                });
+//            }
+//        });
+
+        Observable.range(1,10).groupBy(new Func1<Integer, Integer>() {
             @Override
-            public Boolean call(Integer integer) {
-                return integer % 2 == 0;
+            public Integer call(Integer integer) {
+                return integer%3;
             }
-        }).subscribe(new Action1<GroupedObservable<Boolean, Integer>>() {
+        }).subscribe(new Action1<GroupedObservable<Integer, Integer>>() {
             @Override
-            public void call(GroupedObservable<Boolean, Integer> result) {
+            public void call(GroupedObservable<Integer, Integer> result) {
                 result.subscribe(new Action1<Integer>() {
                     @Override
                     public void call(Integer integer) {
-                        System.out.println(integer + "%2==0-->" + result.getKey());
+                        System.out.println(integer + "%3==" + result.getKey());
                     }
                 });
             }
         });
+
+
+
     }
 
     public static void map() {
@@ -97,7 +118,7 @@ public class Transforming {
 
 
     public static void window() {
-        Observable.range(0, 10).window(1,2).subscribe(new Action1<Observable<Integer>>() {
+        Observable.range(1, 10).window(1,3).subscribe(new Action1<Observable<Integer>>() {
             @Override
             public void call(Observable<Integer> integerObservable) {
                 integerObservable.subscribe(System.out::println);
@@ -106,16 +127,35 @@ public class Transforming {
         });
     }
 
+    public static  void test(){
+        Observable.just("1")
+                .map(s -> { print("default "); return s;})
+                .subscribeOn(Schedulers.newThread()).map(s -> 	{ print("subscribeOn(Schedulers.newThread() "); return s;})
+                .subscribeOn(Schedulers.io()).map(s -> 	{ print("subscribeOn(Schedulers.io() "); return s;})
+                .observeOn(Schedulers.io()).map(s -> 	{  print("observeOn(Schedulers.io()  "); return s;})
+                .subscribeOn(Schedulers.immediate()).map(s -> 	{  print("subscribeOn(Schedulers.immediate() "); return s;  })
+                .observeOn(Schedulers.computation()).map(s -> 	{  print("observeOn(Schedulers.computation() "); return s;})
+                .subscribeOn(Schedulers.immediate()).map(s -> 	{  print("subscribeOn(Schedulers.immediate() "); return s;  })
+                .subscribe((a) -> { print("onComplete ");  });
+    }
+
+    private static void print(String s) {
+        System.out.println(s);
+    }
+
+
     public static void main(String[] args) {
 //        buffer1();
 //        buffer2();
 //        buffer3();
 //        flatMap();
 //        concatMap();//类似于最简单版本的flatMap，但是它按次序连接而不是合并那些生成的Observables，然后产生自己的数据序列。
+//        switchMap();
 //        groupBy();
 //        map();
-//        scan();
+        scan();
 //        scan2();
-//        window();
+        window();
+//        test();
     }
 }
